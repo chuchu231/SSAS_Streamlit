@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # URL của API chạy trên máy Windows (thay bằng IP nếu chạy trên server)
-API_URL = "http://localhost:5000/get_aqi"
+API_URL = "http://172.20.10.2:5000"
 
 st.title("📊 Mean AQI Dashboard")
 
