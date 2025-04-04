@@ -1,41 +1,41 @@
-import streamlit as st
 import requests
-import pandas as pd
+import streamlit as st
 import matplotlib.pyplot as plt
 
-# URL của API chạy trên máy Windows (thay bằng IP nếu chạy trên server)
-API_URL = "http://172.20.10.2:5000"
+# Gọi API (dán link Ngrok thật của bạn vào đây)
+API_URL = "https://84d6-2001-ee0-5615-cfa0-9c60-b5d1-2271-4f22.ngrok-free.app/get_aqi"
 
-st.title("📊 Mean AQI Dashboard")
+st.title("📊 Mean AQI Dashboard (via API)")
 
-# Gọi API
-st.write("🔄 Đang lấy dữ liệu từ API...")
-response = requests.get(API_URL)
-
-if response.status_code == 200:
+try:
+    response = requests.get(API_URL, timeout=10)
     data = response.json()
-    if "error" in data:
-        st.error(f"Lỗi API: {data['error']}")
+
+    if data:
+        formatted_results = [[row[0], row[2], row[4], row[-1]] for row in data]
+        years = [row[0] for row in formatted_results]
+        quarters = [row[1] for row in formatted_results]
+        states = [row[2] for row in formatted_results]
+        mean_aqi = [row[3] for row in formatted_results]
+        time_labels = [f"{y}-Q{q}" for y, q in zip(years, quarters)]
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        unique_states = list(set(states))
+        for state in unique_states:
+            state_aqi = [mean_aqi[i] for i in range(len(states)) if states[i] == state]
+            state_labels = [time_labels[i] for i in range(len(states)) if states[i] == state]
+            ax.plot(state_labels, state_aqi, marker="o", label=state)
+
+        ax.set_xlabel("Thời gian (Year-Quarter)")
+        ax.set_ylabel("Mean AQI")
+        ax.set_title("📈 Mean AQI theo Thời gian")
+        ax.legend(title="State")
+        ax.grid(True)
+        plt.xticks(rotation=45)
+        st.pyplot(fig)
+
     else:
-        # Chuyển đổi dữ liệu thành DataFrame
-        df = pd.DataFrame(data, columns=["Year", "Quarter", "State", "Mean AQI"])
-        st.table(df)
+        st.warning("⚠️ Không có dữ liệu trả về từ API.")
 
-        # Vẽ biểu đồ
-        plt.figure(figsize=(10, 5))
-        for state in df["State"].unique():
-            state_data = df[df["State"] == state]
-            plt.plot(
-                state_data["Year"].astype(str) + "-Q" + state_data["Quarter"].astype(str),
-                state_data["Mean AQI"],
-                marker="o",
-                label=state
-            )
-
-        plt.xlabel("Thời gian")
-        plt.ylabel("Mean AQI")
-        plt.legend()
-        st.pyplot(plt)
-
-else:
-    st.error("❌ Lỗi lấy dữ liệu từ API!")
+except Exception as e:
+    st.error(f"Lỗi khi gọi API: {e}")
