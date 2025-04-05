@@ -3,7 +3,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 # Gọi API 
-API_URL = "https://a082-2001-ee0-5615-cfa0-9c60-b5d1-2271-4f22.ngrok-free.app/get_aqi"
+API_URL = "https://9a61-2001-ee0-5615-cfa0-9c60-b5d1-2271-4f22.ngrok-free.app/get_aqi"
 
 st.title("📊 Mean AQI Dashboard (via API)")
 
