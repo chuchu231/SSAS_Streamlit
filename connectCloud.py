@@ -2,8 +2,8 @@ import requests
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Gọi API (dán link Ngrok thật của bạn vào đây)
-API_URL = "https://84d6-2001-ee0-5615-cfa0-9c60-b5d1-2271-4f22.ngrok-free.app/get_aqi"
+# Gọi API 
+API_URL = "https://0aad-2001-ee0-5615-cfa0-9c60-b5d1-2271-4f22.ngrok-free.app/get_aqi"
 
 st.title("📊 Mean AQI Dashboard (via API)")
 
